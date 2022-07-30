@@ -1,0 +1,21 @@
+-- CreateEnum
+CREATE TYPE "AdType" AS ENUM ('POST', 'COMMENT', 'ASIDE');
+
+-- AlterTable
+ALTER TABLE "PostCandidatures" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- CreateTable
+CREATE TABLE "Ads" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "image" TEXT NOT NULL,
+    "link" TEXT NOT NULL,
+    "type" "AdType" NOT NULL,
+    "isAvailable" BOOLEAN NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Ads_pkey" PRIMARY KEY ("id")
+);

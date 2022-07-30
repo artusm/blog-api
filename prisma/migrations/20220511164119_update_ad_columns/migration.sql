@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Ads" ALTER COLUMN "type" DROP NOT NULL;

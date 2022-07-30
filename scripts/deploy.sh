@@ -1,0 +1,1 @@
+git fetch && git pull && yarn && yarn prisma migrate dev && yarn build && pm2 stop default && pm2 delete default && pm2 start dist/main.js

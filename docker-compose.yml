@@ -1,0 +1,13 @@
+version: "3"
+services:
+  postgres:
+    container_name: blog-api
+    image: postgres:alpine
+    restart: always
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: development
+      POSTGRES_DB: blog-api
+      PGDATA: /var/lib/postgres

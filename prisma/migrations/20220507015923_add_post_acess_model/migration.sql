@@ -1,0 +1,10 @@
+-- CreateTable
+CREATE TABLE "PostAccess" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER,
+    "postId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "PostAccess_pkey" PRIMARY KEY ("id")
+);

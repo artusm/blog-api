@@ -1,0 +1,180 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider = "mysql"
+  url = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Users {
+  id Int @id @default(autoincrement())
+  name String
+  image String?
+  email String @unique
+  github  String? @unique
+  role Role @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  
+  posts Posts[] 
+  comments Comments[]
+  postRates PostRates[]
+  commentRates CommentRates[]
+  candidatures PostCandidatures[]
+  acess PostAccess[]
+}
+
+model Posts {
+  id Int @id @default(autoincrement())
+  slug String @unique
+  image String?
+  link String?
+  title String
+  content String
+  description String?
+  userId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user Users? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments Comments[]
+  rates PostRates[]
+  candidatures PostCandidatures[]
+  tags PostTags[]
+  acess PostAccess[]
+}
+
+model PostTags {
+  id Int @id @default(autoincrement())
+  name String 
+  postId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  post Posts @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+enum PostCandidatureState {
+  ACCEPTED
+  DENIED
+  WAITING
+}
+
+model PostCandidatures {
+  id Int @id @default(autoincrement())
+  userId Int
+  postId Int
+  state  PostCandidatureState @default(WAITING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user Users? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Posts? @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model PostRates {  
+  id Int @id @default(autoincrement())
+  value Int
+  postId Int
+  userId Int
+
+  user Users? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Posts? @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Comments {
+  id Int @id @default(autoincrement())
+  userId Int
+  postId Int
+  content String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user Users? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Posts? @relation(fields: [postId], references: [id], onDelete: Cascade)
+  rates CommentRates[]
+}
+
+model CommentRates {  
+  id Int @id @default(autoincrement())
+  value Int
+  commentId Int
+  userId Int
+
+  user Users? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment Comments? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+}
+
+enum AdType {
+  POST
+  COMMENT
+  ASIDE
+}
+
+model AdContents {
+  id Int @id @default(autoincrement())
+  link String
+  title String
+  image String?
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  feedAds FeedAds[]
+  postAds PostAds[]
+  commentAds AsideAds[] 
+}
+
+model FeedAds {
+  id Int @id @default(autoincrement())
+  adContentId Int?
+  isAvailable Boolean @default(true)
+  frequency Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  
+  adContent AdContents? @relation(fields: [adContentId], references: [id], onDelete: Cascade)
+}
+
+model PostAds {
+  id Int @id @default(autoincrement())
+  adContentId Int?
+  isAvailable Boolean @default(true)
+  postId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  adContent AdContents? @relation(fields: [adContentId], references: [id], onDelete: Cascade)
+}
+
+model AsideAds {
+  id Int @id @default(autoincrement())
+  adContentId Int?
+  isAvailable Boolean @default(true)
+  campaignTime Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  
+  adContent AdContents? @relation(fields: [adContentId], references: [id], onDelete: Cascade)
+}
+
+model PostAccess {
+  id Int @id @default(autoincrement())
+  userId Int?
+  postSlug String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user Users? @relation(fields: [userId], references: [id])
+  post Posts? @relation(fields: [postSlug], references: [slug])
+}
